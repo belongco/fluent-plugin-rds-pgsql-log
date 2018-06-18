@@ -198,13 +198,13 @@ class Fluent::Plugin::RdsPgsqlLogInput < Fluent::Plugin::Input
           record["message"] << "\n" + raw_record unless record.nil?
         else
           # emit before record
-          router.emit(@tag, record["time"], record) unless record.nil?
-
-          unix_timestamp = Time.parse(line_match[:time]).to_i
+          router.emit(@tag, record["unix_timestamp"], record) unless record.nil?
 
           # set a record
+          unix_timestamp = Time.parse(line_match[:time]).to_i
           record = {
-            "time" => unix_timestamp,
+            "time" => line_match[:time],
+            "unix_timestamp" => unix_timestamp,
             "host" => line_match[:host],
             "user" => line_match[:user],
             "database" => line_match[:database],
@@ -216,7 +216,7 @@ class Fluent::Plugin::RdsPgsqlLogInput < Fluent::Plugin::Input
         end
       end
       # emit last record
-      router.emit(@tag, record["time"], record) unless record.nil?
+      router.emit(@tag, record["unix_timestamp"], record) unless record.nil?
     rescue => e
       $log.warn e.message
     end
