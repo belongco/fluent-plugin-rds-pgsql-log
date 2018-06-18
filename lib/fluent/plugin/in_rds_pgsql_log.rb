@@ -203,7 +203,6 @@ class Fluent::Plugin::RdsPgsqlLogInput < Fluent::Plugin::Input
           # set a record
           unix_timestamp = Time.parse(line_match[:time]).to_i
           record = {
-            "time" => line_match[:time],
             "unix_timestamp" => unix_timestamp,
             "host" => line_match[:host],
             "user" => line_match[:user],

@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "belong-plugin-rds-pgsql-log"
-  spec.version       = "0.3.0"
+  spec.version       = "0.3.2"
   spec.authors       = ["shinsaka", "phani"]
   spec.email         = ["shinx1265@gmail.com", "phani@belong.co"]
   spec.summary       = "Amazon RDS for PostgreSQL log input plugin"
