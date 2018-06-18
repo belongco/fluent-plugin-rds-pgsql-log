@@ -1,4 +1,5 @@
 require 'fluent/input'
+require 'time'
 require 'aws-sdk'
 
 class Fluent::Plugin::RdsPgsqlLogInput < Fluent::Plugin::Input
@@ -197,23 +198,25 @@ class Fluent::Plugin::RdsPgsqlLogInput < Fluent::Plugin::Input
           record["message"] << "\n" + raw_record unless record.nil?
         else
           # emit before record
-          router.emit(@tag, Fluent::Engine.now, record) unless record.nil?
+          router.emit(@tag, record["time"], record) unless record.nil?
+
+          unix_timestamp = Time.parse(line_match[:time]).to_i
 
           # set a record
           record = {
-            "time" => line_match[:time],
+            "time" => unix_timestamp,
             "host" => line_match[:host],
             "user" => line_match[:user],
             "database" => line_match[:database],
             "pid" => line_match[:pid],
-            "message_level" => line_match[:message_level],
+            "LOGLEVEL" => line_match[:message_level],
             "message" => line_match[:message],
             "log_file_name" => log_file_name,
           }
         end
       end
       # emit last record
-      router.emit(@tag, Fluent::Engine.now, record) unless record.nil?
+      router.emit(@tag, record["time"], record) unless record.nil?
     rescue => e
       $log.warn e.message
     end
